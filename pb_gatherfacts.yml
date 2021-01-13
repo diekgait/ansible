@@ -1,0 +1,22 @@
+---
+- name: "Gather facts"
+  connection: ansible.netcommon.network_cli
+  hosts: all
+  gather_facts: True
+  tasks:
+
+#    - name: VIEW ALL ANSIBLE FACT KEYS
+#      debug:
+#       var: ansible_facts.keys()
+
+#    - name: VIEW HOSTNAME
+#      debug:
+#        var: ansible_net_hostname
+    
+    - name: VIEW OS VERSION
+      debug:
+        var: ansible_net_version
+    - name: VIEW SN
+      debug:
+        var: ansible_net_serialnum
+...

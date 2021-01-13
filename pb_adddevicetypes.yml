@@ -1,0 +1,40 @@
+---
+- name: "Add Netbox roles"
+  connection: local
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: "IOSv-switch"
+      netbox.netbox.netbox_device_type:
+        netbox_url: "https://vps01.lansink.it"
+        netbox_token: "4e78012ed28ded8da1697f866c372838e29983bd"
+        data:
+          model: "IOSv-switch"
+          slug: "iosv-switch"
+          manufacturer: "Cisco"
+    - name: "Cisco CSR1000V"
+      netbox.netbox.netbox_device_type:
+        netbox_url: "https://vps01.lansink.it"
+        netbox_token: "4e78012ed28ded8da1697f866c372838e29983bd"
+        data:
+          model: "Cisco CSR1000V"
+          slug: "cisco-csr1000v"
+          manufacturer: "Cisco"
+    - name: "IOS XRV router"
+      netbox.netbox.netbox_device_type:
+        netbox_url: "https://vps01.lansink.it"
+        netbox_token: "4e78012ed28ded8da1697f866c372838e29983bd"
+        data:
+          model: "IOS XRV router"
+          slug: "ios-xrv-router"
+          manufacturer: "Cisco"
+    - name: "Nexus 9000v"
+      netbox.netbox.netbox_device_type:
+        netbox_url: "https://vps01.lansink.it"
+        netbox_token: "4e78012ed28ded8da1697f866c372838e29983bd"
+        data:
+          model: "Nexus 9000v"
+          slug: "nexus-9000v"
+          manufacturer: "Cisco"
+        state: "present"
+...

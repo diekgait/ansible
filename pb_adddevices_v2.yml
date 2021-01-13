@@ -1,0 +1,67 @@
+---
+- name: "Test Netbox modules"
+  connection: network_cli
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: "TASK 100: NETBOX >> ADD DEVICE TO NETBOX"
+      netbox.netbox.netbox_device:
+        netbox_url: "{{ NETBOX_URL }}"
+        netbox_token: "{{ NETBOX_API_KEY }}"
+        data:
+          name: "{{ inventory_hostname }}"
+          device_type: "{{ ansible_net_model }}"
+          platform: IOS  # May be able to use a filter to define in future
+          serial: "{{ ansible_net_serialnum }}"
+          status: Active
+          device_role: "{{ device_role }}"
+          site: “test"
+          custom_fields:
+            code_version: "{{ ansible_net_version }}"
+    - name: "TASK 110: NETBOX >> ADD INTERFACES TO NETBOX"
+      netbox.netbox.netbox_device_interface:
+        netbox_url: "{{ NETBOX_URL }}"
+        netbox_token: "{{ NETBOX_API_KEY }}"
+        data:
+          device: "{{ inventory_hostname }}"
+          name: "{{ item.key }}"
+          type: "{{ item.key | get_interface_type }}"  # Define types
+          mac_address: "{{ item.value.macaddress | ansible.netcommon.hwaddr('linux') }}"
+        state: present
+      with_dict:
+        - "{{ ansible_net_interfaces }}"
+    - name: "TASK 200: NETBOX >> Add temporary interface"
+      netbox.netbox.netbox_device_interface:
+        netbox_url: "{{ NETBOX_URL }}"
+        netbox_token: "{{ NETBOX_API_KEY }}"
+        data:
+          device: "{{ inventory_hostname }}"
+          name: Temporary_Interface
+          type: Virtual
+        state: present
+
+    - name: "TASK 210: NETBOX >> ADD IP ADDRESS OF ANSIBLE HOST"
+      netbox.netbox.netbox_ip_address:
+        netbox_url: "{{ NETBOX_URL }}"
+        netbox_token: "{{ NETBOX_API_KEY }}"
+        data:
+          assigned_object:
+            name: "Temporary_Interface"
+            device: "{{ inventory_hostname }}"          
+          address: "{{ ansible_host }}/24"
+          status: active
+          vrf: 'MGMT'
+        state: present
+
+    - name: "TASK 220: NETBOX >> ASSOCIATE IP ADDRESS TO DEVICE"
+      netbox.netbox.netbox_device:
+        netbox_url: "{{ NETBOX_URL }}"
+        netbox_token: "{{ NETBOX_API_KEY }}"
+        data:
+          name: "{{ inventory_hostname }}"
+          device_type: "{{ ansible_net_model }}"
+          platform: IOS
+          serial: "{{ ansible_net_serialnum }}"
+          status: Active
+          primary_ip4: "{{ ansible_host }}"
+...

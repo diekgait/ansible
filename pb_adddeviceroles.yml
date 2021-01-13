@@ -1,0 +1,42 @@
+---
+- name: "Add Netbox roles"
+  connection: local
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: "Core Router"
+      netbox.netbox.netbox_device_role:
+        netbox_url: "https://vps01.lansink.it"
+        netbox_token: "4e78012ed28ded8da1697f866c372838e29983bd"
+        data:
+          name: "Core Router"
+          slug: "core-router"
+    - name: "Distributie Router"
+      netbox.netbox.netbox_device_role:
+        netbox_url: "https://vps01.lansink.it"
+        netbox_token: "4e78012ed28ded8da1697f866c372838e29983bd"
+        data:
+          name: "Distributie Router"
+          slug: "distributie-router"
+    - name: "Internet Router"
+      netbox.netbox.netbox_device_role:
+        netbox_url: "https://vps01.lansink.it"
+        netbox_token: "4e78012ed28ded8da1697f866c372838e29983bd"
+        data:
+          name: "Internet Router"
+          slug: "internet-router"
+    - name: "Edge Switch"
+      netbox.netbox.netbox_device_role:
+        netbox_url: "https://vps01.lansink.it"
+        netbox_token: "4e78012ed28ded8da1697f866c372838e29983bd"
+        data:
+          name: "Edge Switch"
+          slug: "edge-switch"
+    - name: "Distributie Switch"
+      netbox.netbox.netbox_device_role:
+        netbox_url: "https://vps01.lansink.it"
+        netbox_token: "4e78012ed28ded8da1697f866c372838e29983bd"
+        data:
+          name: "Distributie Switch"
+          slug: "distributie-switch"
+...

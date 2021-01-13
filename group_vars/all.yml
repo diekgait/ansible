@@ -1,0 +1,5 @@
+---
+ansible_password: cisco
+ansible_user: cisco
+NETBOX_URL: https://vps01.lansink.it
+NETBOX_API_KEY: 4e78012ed28ded8da1697f866c372838e29983bd

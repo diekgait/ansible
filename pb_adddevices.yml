@@ -1,0 +1,17 @@
+---
+- name: "Test Netbox modules"
+  connection: local
+  hosts: all
+  gather_facts: False
+  tasks:
+    - name: "Add hosts"
+      netbox.netbox.netbox_device:
+        netbox_url: "{{ NETBOX_URL }}"
+        netbox_token: "{{ NETBOX_API_KEY }}"
+        data:
+          name: "{{ inventory_hostname }}"
+          device_type: "{{ device_type }}"
+          device_role: "{{ device_role }}"
+          site: "{{ site }}"
+        state: "present"
+...

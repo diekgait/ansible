@@ -1,0 +1,119 @@
+Building configuration...
+
+Current configuration : 1294 bytes
+!
+! Last configuration change at 12:36:51 UTC Wed Jan 13 2021
+upgrade fpd auto
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name oefen.lab
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+username cisco privilege 15 password 0 cisco
+!
+redundancy
+!
+!
+ip tcp synwait-time 5
+ip scp server enable
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 192.168.13.2 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+no cdp log mismatch duplex
+!
+!
+!
+control-plane
+!
+!
+!
+mgcp profile default
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login local
+ transport input telnet ssh
+!
+!
+end

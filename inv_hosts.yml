@@ -1,0 +1,26 @@
+all:
+  hosts:
+    R1:
+      device_type: Cisco-7206VXR
+      device_role: core-router
+      site: test
+      ansible_ssh_host: 192.168.13.1
+      ansible_network_os: ios
+    R2:
+      device_type: Cisco-7206VXR
+      device_role: core-router
+      site: test
+      ansible_ssh_host: 192.168.13.2
+      ansible_network_os: ios
+    R3:
+      device_type: Cisco-7206VXR
+      device_role: distributie-router
+      site: test
+      ansible_ssh_host: 192.168.13.3
+      ansible_network_os: ios
+    R4:
+      device_type: Cisco-7206VXR
+      device_role: distributie-router
+      site: test
+      ansible_ssh_host: 192.168.13.4
+      ansible_network_os: ios

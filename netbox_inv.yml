@@ -1,0 +1,13 @@
+---
+plugin: netbox.netbox.nb_inventory
+api_endpoint: https://vps01.lansink.it/
+token: 4e78012ed28ded8da1697f866c372838e29983bd
+validate_certs: true
+config_context: false
+group_by:
+ - device_roles
+#query_filters:
+#  - role: edge-switch
+compose:
+ ansible_network_os: platform.slug
+ ansible_ssh_host: primary_ip4.address | regex_replace('/[0-9]{1,2}', '')

@@ -1,0 +1,45 @@
+---
+site_list:
+  - name: “NYC”
+    time_zone: America/New_York
+    status: Active
+  - name: “CHI”
+    time_zone: America/Chicago
+    status: Active
+  - name: “RTP”
+    time_zone: America/New_York
+    status: Active
+manufacturers:  # In alphabetical order
+  - Arista
+  - Cisco
+  - Juniper
+device_types:
+  - model: “ASAv”
+    manufacturer: “Cisco”
+    slug: “asav”
+    part_number: “asav”
+    Full_depth: False
+  - model: “CSR1000v”
+    manufacturer: “Cisco”
+    slug: “csr1000v”
+    part_number: “csr1000v”
+    Full_depth: False
+  - model: “vEOS”
+    manufacturer: “Arista”
+    slug: “veos”
+    part_number: “veos”
+    Full_depth: False
+  - model: “vSRX”
+    manufacturer: “Juniper”
+    slug: “vsrx”
+    part_number: “vsrx”
+    Full_depth: False
+platforms:
+  - name: “ASA”
+    slug: “asa”
+  - name: “EOS”
+    slug: “eos”
+  - name: “IOS”
+    slug: “ios”
+  - name: “JUNOS”
+    slug: “junos”
