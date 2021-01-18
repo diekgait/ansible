@@ -30,23 +30,13 @@
         state: present
       with_dict:
         - "{{ ansible_net_interfaces }}"
-    - name: "TASK 200: NETBOX >> Add temporary interface"
-      netbox.netbox.netbox_device_interface:
-        netbox_url: "{{ NETBOX_URL }}"
-        netbox_token: "{{ NETBOX_API_KEY }}"
-        data:
-          device: "{{ inventory_hostname }}"
-          name: Temporary_Interface
-          type: Virtual
-        state: present
-
     - name: "TASK 210: NETBOX >> ADD IP ADDRESS OF ANSIBLE HOST"
       netbox.netbox.netbox_ip_address:
         netbox_url: "{{ NETBOX_URL }}"
         netbox_token: "{{ NETBOX_API_KEY }}"
         data:
           assigned_object:
-            name: "Temporary_Interface"
+            name: "FastEthernet0/0"
             device: "{{ inventory_hostname }}"          
           address: "{{ ansible_host }}/24"
           status: active

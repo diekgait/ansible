@@ -1,13 +1,10 @@
-Building configuration...
-
-Current configuration : 1294 bytes
-!
-! Last configuration change at 12:37:02 UTC Wed Jan 13 2021
 upgrade fpd auto
 version 15.2
-service timestamps debug datetime msec
-service timestamps log datetime msec
-no service password-encryption
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
 !
 hostname R3
 !
@@ -16,7 +13,19 @@ boot-end-marker
 !
 !
 !
-no aaa new-model
+aaa new-model
+!
+!
+aaa authentication login default local
+aaa authorization exec default local
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone GMT 1 0
+clock summer-time MDT recurring
 no ip icmp rate-limit unreachable
 !
 !
@@ -25,7 +34,7 @@ no ip icmp rate-limit unreachable
 !
 !
 no ip domain lookup
-ip domain name oefen.lab
+ip domain name mock-domain.com
 ip cef
 no ipv6 cef
 !
@@ -39,14 +48,20 @@ multilink bundle-name authenticated
 !
 !
 !
-username cisco privilege 15 password 0 cisco
+archive
+ path disk0:archive
+username cisco privilege 15 password 7 1511021F0725
 !
 redundancy
 !
 !
 ip tcp synwait-time 5
+ip ssh version 2
+ip ssh pubkey-chain
+  username cisco
+   key-hash ssh-rsa 759C9A5D0620C1DD42AADBFCB28F512D dlansink@L-IT-LAPTOP01
 ip scp server enable
-! 
+!
 !
 !
 !
@@ -59,7 +74,7 @@ ip scp server enable
 interface FastEthernet0/0
  ip address 192.168.13.3 255.255.255.0
  duplex auto
- speed auto
+ speed auto 
 !
 interface FastEthernet0/1
  no ip address
@@ -79,6 +94,7 @@ interface FastEthernet1/1
  duplex auto
  speed auto
 !
+!
 ip forward-protocol nd
 no ip http server
 no ip http secure-server
@@ -86,6 +102,11 @@ no ip http secure-server
 !
 !
 no cdp log mismatch duplex
+!
+snmp-server enable traps entity-sensor threshold
+snmp-server host 172.16.10.22 version 2c readstring
+snmp-server host 172.16.10.33 version 2c readstring
+!
 !
 !
 !
@@ -112,8 +133,10 @@ line aux 0
  logging synchronous
  stopbits 1
 line vty 0 4
- login local
- transport input telnet ssh
+ transport input ssh
+line vty 5 15
+ transport input ssh
 !
+ntp server 172.16.10.22
 !
 end
