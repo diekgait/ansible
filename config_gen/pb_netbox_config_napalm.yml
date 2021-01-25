@@ -2,7 +2,7 @@
 
 - name: Create config using hostvars from Netbox and Jinja2 template
   connection: network_cli
-  hosts: all
+  hosts: ESW01:ESW02
   gather_facts: false
   tasks:
   - name: Create diff directory
@@ -12,7 +12,7 @@
       mode: '0755'
   - name: "Generate configs using data obtained from netbox"
     template:
-      src: "./templates/routers.j2"
+      src: "./templates/{{ device_roles[0] }}.j2"
       dest: './compiled/{{ inventory_hostname }}/running-config'
       lstrip_blocks: true
   - napalm_install_config:
@@ -21,19 +21,10 @@
       dev_os: '{{ ansible_network_os }}'
       password: '{{ ansible_password }}'
       config_file: './compiled/{{ inventory_hostname }}/running-config'
-      #config_file: './output/{{ inventory_hostname }}.cfg'
       commit_changes: true
       replace_config: true
       get_diffs: true
       diff_file: './compiled/{{ inventory_hostname }}/diff'
       #optional_args:
       #  dest_file_system : 'disk0:/'
-      
-  # - name: Install Config using Provider
-  #  napalm_install_config:
-  #    provider: "{{ ios_provider }}"
-  #    config_file: '../compiled/{{ inventory_hostname }}/running.conf'
-  #    commit_changes: '{{ commit_changes }}'
-  #    replace_config: '{{ replace_config }}'
-  #    get_diffs: True
-  #    diff_file: '../compiled/{{ inventory_hostname }}/diff'
+...

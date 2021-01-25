@@ -1,0 +1,119 @@
+!
+version 12.2
+no service timestamps debug uptime
+no service timestamps log uptime
+no service password-encryption
+!
+hostname {{ inventory_hostname }}
+!
+boot-start-marker
+boot-end-marker
+!
+!
+username cisco privilege 15 password 7 1511021F0725
+!
+!
+aaa new-model
+!
+!
+aaa authentication login default local
+aaa authorization exec default local 
+!
+!
+!
+aaa session-id common
+clock timezone GMT 1
+clock summer-time MDT recurring
+switch 1 provision ws-c3750-24p
+system mtu routing 1500
+vtp mode transparent
+no ip domain-lookup
+ip domain-name mock-domain.com
+!
+!
+!
+!
+!
+!
+!
+!
+archive
+ path flash:archive
+spanning-tree mode pvst
+spanning-tree portfast bpduguard default
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 5
+ name test
+!
+vlan 6
+ name tank
+!
+vlan 7
+ name tank7
+!
+vlan 8
+ name tank8
+!
+ip ssh version 2
+ip scp server enable
+!
+!
+!
+{% for interface in interfaces %}
+interface {{ interface.name }}
+  {% if interface.mode %}
+    {% if interface.mode.label == 'Access' %}
+      {% if interface.untagged_vlan.vid != 1 %}
+ switchport access vlan {{ interface.untagged_vlan.vid }}
+      {% endif %}
+ switchport mode access
+!
+    {% elif interface.mode.label == 'Tagged (All)' %}
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+    {% endif %}
+  {% elif interface.ip_addresses %}
+    {% for ip in interface.ip_addresses %}
+ ip address {{ ip.address | ipaddr('address') }} {{ ip.address | ipaddr('netmask') }}
+!
+    {% endfor %}
+  {% else %}
+ shutdown
+!
+  {% endif %}
+{% endfor %}
+no ip classless
+no ip http server
+no ip http secure-server
+!
+!
+logging 192.168.13.100
+!
+{% for context in config_context %}
+{% for snmp_host in context.snmp_hosts %}
+snmp-server host {{ snmp_host }} version 2c readstring 
+{% endfor %}
+{% endfor %}
+!
+no vstack
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+{% for context in config_context %}
+{% for ntp_server in context.ntp_servers %}
+ntp server {{ ntp_server }}
+{% endfor %}
+{% endfor %}
+end

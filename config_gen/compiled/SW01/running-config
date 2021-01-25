@@ -1,0 +1,171 @@
+!
+version 12.2
+no service timestamps debug uptime
+no service timestamps log uptime
+no service password-encryption
+!
+hostname SW01
+!
+boot-start-marker
+boot-end-marker
+!
+!
+username cisco privilege 15 password 7 1511021F0725
+!
+!
+aaa new-model
+!
+!
+aaa authentication login default local
+aaa authorization exec default local 
+!
+!
+!
+aaa session-id common
+clock timezone GMT 1
+clock summer-time MDT recurring
+switch 1 provision ws-c3750-24p
+system mtu routing 1500
+vtp mode transparent
+no ip domain-lookup
+ip domain-name mock-domain.com
+!
+!
+!
+!
+!
+!
+!
+!
+archive
+ path flash:archive
+spanning-tree mode pvst
+spanning-tree portfast bpduguard default
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 5
+ name test
+!
+vlan 6
+ name tank
+!
+vlan 7
+ name tank7
+!
+vlan 8
+ name tank8
+!
+ip ssh version 2
+ip scp server enable
+!
+!
+!
+interface FastEthernet1/0/1
+ switchport mode access
+!
+interface FastEthernet1/0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet1/0/3
+ shutdown
+!
+interface FastEthernet1/0/4
+ switchport access vlan 5
+ switchport mode access
+!
+interface FastEthernet1/0/5
+ shutdown
+!
+interface FastEthernet1/0/6
+ shutdown
+!
+interface FastEthernet1/0/7
+ shutdown
+!
+interface FastEthernet1/0/8
+ shutdown
+!
+interface FastEthernet1/0/9
+ shutdown
+!
+interface FastEthernet1/0/10
+ shutdown
+!
+interface FastEthernet1/0/11
+ shutdown
+!
+interface FastEthernet1/0/12
+ shutdown
+!
+interface FastEthernet1/0/13
+ shutdown
+!
+interface FastEthernet1/0/14
+ shutdown
+!
+interface FastEthernet1/0/15
+ shutdown
+!
+interface FastEthernet1/0/16
+ shutdown
+!
+interface FastEthernet1/0/17
+ shutdown
+!
+interface FastEthernet1/0/18
+ shutdown
+!
+interface FastEthernet1/0/19
+ shutdown
+!
+interface FastEthernet1/0/20
+ shutdown
+!
+interface FastEthernet1/0/21
+ shutdown
+!
+interface FastEthernet1/0/22
+ shutdown
+!
+interface FastEthernet1/0/23
+ shutdown
+!
+interface FastEthernet1/0/24
+ shutdown
+!
+interface GigabitEthernet1/0/1
+ shutdown
+!
+interface GigabitEthernet1/0/2
+ shutdown
+!
+interface Vlan1
+ ip address 192.168.13.5 255.255.255.0
+!
+no ip classless
+no ip http server
+no ip http secure-server
+!
+!
+logging 192.168.13.100
+!
+snmp-server host 172.16.10.22 version 2c readstring 
+snmp-server host 172.16.10.33 version 2c readstring 
+!
+no vstack
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+ntp server 172.16.10.22
+end

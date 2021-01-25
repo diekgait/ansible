@@ -2,12 +2,14 @@
 
 - name: Create config using hostvars from Netbox and Jinja2 template
   connection: local
-  hosts: all
+  hosts: SW01
   gather_facts: false
 
   tasks:
     - name: "Generate configs using data obtained from netbox"
       template:
-        src: "./templates/routers.j2"
+        src: "./templates/{{ device_roles[0] }}.j2"
         dest: "./output/{{ inventory_hostname }}.cfg"
         lstrip_blocks: true
+        trim_blocks: true
+

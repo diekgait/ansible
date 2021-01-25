@@ -1,16 +1,16 @@
 import telnetlib
 
 tnports = {
-    '192.168.13.1' : 5001,
-    '192.168.13.2' : 5002,
-    '192.168.13.3' : 5003,
-    '192.168.13.4' : 5004,
+    '192.168.13.11' : 5000,
+    '192.168.13.12' : 5002,
 }
 for host,port in tnports.items():
     tn = telnetlib.Telnet("192.168.56.102",port)
     print(tn.read_very_eager().decode('ascii'))
     tn.write(b"\r")
     print(tn.read_very_eager().decode('ascii'))
+    tn.write(b"enable\r")
+    tn.read_very_eager()
     tn.write(b"terminal length 0\r")
     tn.read_very_eager()
     tn.write(b"conf t\r")
@@ -20,6 +20,10 @@ for host,port in tnports.items():
     tn.write(b"ip domain-name oefen.lab\r")
     tn.read_very_eager()
     tn.write(b"crypto key generate rsa mod 2048\r")
+    tn.read_very_eager()
+    tn.write(b"line con 0\r")
+    tn.read_very_eager()
+    tn.write(b"privilege level 15\r")
     tn.read_very_eager()
     tn.write(b"line vty 0 4\r")
     tn.read_very_eager()
@@ -33,13 +37,10 @@ for host,port in tnports.items():
     tn.read_very_eager()
     tn.write(b"archive\r")
     tn.read_very_eager()
-    tn.write(b"path disk0:archive\r")
+    tn.write(b"path flash0:archive\r")
     tn.read_very_eager()
-    tn.write(b"ip ssh pubkey-chain\r")
-    tn.write(b"username cisco\r")
-    tn.write(b"key-hash ssh-rsa 759C9A5D0620C1DD42AADBFCB28F512D dlansink@L-IT-LAPTOP01\r")
     tn.read_very_eager()
-    tn.write(b"int fa0/0\r")
+    tn.write(b"int vlan 1\r")
     tn.read_very_eager()
     tn.write(str.encode(f"ip address {host} 255.255.255.0\r"))
     tn.read_very_eager()

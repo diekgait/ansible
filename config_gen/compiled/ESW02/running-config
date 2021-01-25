@@ -1,0 +1,134 @@
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname ESW02
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+username cisco privilege 15 password 7 1511021F0725
+aaa new-model
+!
+!
+aaa authentication login default local
+aaa authorization exec default local
+!
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone GMT 1 0
+clock summer-time MDT recurring
+!
+!
+!
+!
+!
+vtp mode transparent
+!
+!
+!
+no ip domain-lookup
+ip domain-name mock-domain.com
+no ip cef
+no ipv6 cef
+!
+!
+file prompt quiet
+archive
+ path flash:archive
+!
+spanning-tree mode pvst
+spanning-tree portfast edge bpduguard default
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 1
+ name "default"
+!
+vlan 7
+ name "voice_haaksbergen"
+!
+vlan 9
+ name "data haaksbergen"
+!
+lldp run
+no cdp run
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ switchport mode access
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ switchport mode access
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface Vlan1
+ ip address 192.168.13.12 255.255.255.0
+!
+no ip classless
+no ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip ssh version 2
+ip scp server enable
+!
+!
+logging host 192.168.13.100
+!
+!
+snmp-server host 172.16.10.22 version 2c readstring 
+snmp-server host 172.16.10.33 version 2c readstring 
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+line vty 0 4
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+ntp server 172.16.10.22
+!
+end

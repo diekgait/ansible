@@ -6,7 +6,7 @@ service timestamps debug datetime msec localtime show-timezone
 service timestamps log datetime msec localtime show-timezone
 service password-encryption
 !
-hostname R3
+hostname {{ inventory_hostname }}
 !
 boot-start-marker
 boot-end-marker
@@ -71,29 +71,36 @@ ip scp server enable
 !
 !
 !
-interface FastEthernet0/0
- ip address 192.168.13.3 255.255.255.0
- duplex auto
- speed auto 
+{% for interface in interfaces -%}
+interface {{ interface.name }}
+ {% if interface.mode %}
+  {% if interface.mode.label == 'Access' %}
+ switchport mode access
+ switchport access vlan {{ interface.untagged_vlan.vid }}
+ spanning-tree portfast
 !
-interface FastEthernet0/1
+  {% elif interface.mode.label == 'Tagged All' %}
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+  {% endif %}
+
+  {% elif interface.ip_addresses %}
+    {% for ip in interface.ip_addresses %}
+ ip address {{ ip.address | ipaddr('address') }} {{ ip.address | ipaddr('netmask') }}
+ duplex auto
+ speed auto
+    {% endfor %} 
+!
+  {% else %}
  no ip address
  shutdown
  duplex auto
  speed auto
 !
-interface FastEthernet1/0
- no ip address
- shutdown
- duplex auto
- speed auto
-!
-interface FastEthernet1/1
- no ip address
- shutdown
- duplex auto
- speed auto
-!
+ {% endif %}
+
+{% endfor %}
 !
 ip forward-protocol nd
 no ip http server
@@ -104,8 +111,11 @@ no ip http secure-server
 no cdp log mismatch duplex
 !
 snmp-server enable traps entity-sensor threshold
-snmp-server host 172.16.10.22 version 2c readstring
-snmp-server host 172.16.10.33 version 2c readstring
+{% for context in config_context %}
+{% for snmp_host in context.snmp_hosts %}
+snmp-server host {{ snmp_host }} version 2c readstring
+{% endfor %}
+{% endfor %}
 !
 !
 !
@@ -137,7 +147,10 @@ line vty 0 4
 line vty 5 15
  transport input ssh
 !
-ntp server 172.16.10.22
-ntp server 172.16.10.23
+{% for context in config_context %}
+{% for ntp_server in context.ntp_servers %}
+ntp server {{ ntp_server }}
+{% endfor %}
+{% endfor %}
 !
 end

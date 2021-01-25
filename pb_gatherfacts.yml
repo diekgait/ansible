@@ -1,7 +1,7 @@
 ---
 - name: "Gather facts"
   connection: ansible.netcommon.network_cli
-  hosts: all
+  hosts: SW01
   gather_facts: True
   tasks:
 

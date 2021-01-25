@@ -1,0 +1,31 @@
+---
+- name: "Test Netbox modules"
+  connection: network_cli
+  hosts: ESW01:ESW02
+  gather_facts: true
+  tasks:
+    - name: "TASK 210: NETBOX >> ADD IP ADDRESS OF ANSIBLE HOST"
+      netbox.netbox.netbox_ip_address:
+        netbox_url: "{{ NETBOX_URL }}"
+        netbox_token: "{{ NETBOX_API_KEY }}"
+        data:
+          assigned_object:
+            name: "Vlan1"
+            device: "{{ inventory_hostname }}"          
+          address: "{{ ansible_host }}/24"
+          status: active
+          vrf: 'MGMT'
+        state: present
+
+    - name: "TASK 220: NETBOX >> ASSOCIATE IP ADDRESS TO DEVICE"
+      netbox.netbox.netbox_device:
+        netbox_url: "{{ NETBOX_URL }}"
+        netbox_token: "{{ NETBOX_API_KEY }}"
+        data:
+          name: "{{ inventory_hostname }}"
+          device_type: "{{ ansible_net_model }}"
+          platform: IOS
+          serial: "{{ ansible_net_serialnum }}"
+          status: Active
+          primary_ip4: "{{ ansible_host }}"
+...

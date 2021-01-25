@@ -1,0 +1,23 @@
+---
+
+- name: Create config using hostvars from Netbox and Jinja2 template
+  connection: local
+  hosts: ESW01
+  gather_facts: false
+
+  tasks:
+    - name: Get vlandata for site from netbox
+      uri:
+        url: "{{ netbox_url }}/api/ipam/vlans/?site={{ sites[0] }}"
+        method: GET
+        return_content: yes
+        headers:
+          accept: "application/json"
+          Authorization: "Token {{ netbox_api_key }}"
+      register: vlanjson
+    - name: Set vlans variable
+      set_fact:
+        vlans: '{{ vlanjson.json.results }}'
+    - name: message it
+      debug:
+        msg: "{{ vlans }}"
