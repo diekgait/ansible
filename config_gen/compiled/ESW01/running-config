@@ -2,7 +2,7 @@
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
-no service password-encryption
+service password-encryption
 service compress-config
 !
 hostname ESW01
@@ -16,13 +16,26 @@ username cisco privilege 15 password 7 1511021F0725
 aaa new-model
 !
 !
+aaa group server radius NAC
+ server-private 192.168.16.11 auth-port 1812 acct-port 1813 key 7 02050A4D09070B2D474A1A1B1314190100062E3825
+ server-private 192.168.16.12 auth-port 1812 acct-port 1813 key 7 02050A4D09070B2D474A1A1B1314190100062E3825
+ server-private 192.168.16.13 auth-port 1812 acct-port 1813 key 7 02050A4D09070B2D474A1A1B1314190100062E3825
+!
 aaa authentication login default local
+aaa authentication dot1x default group NAC
 aaa authorization exec default local
+aaa authorization network default group NAC
+aaa accounting dot1x default start-stop group NAC
 !
 !
 !
 !
 !
+aaa server radius dynamic-author
+ client 192.168.16.11 server-key 7 02050A4D09070B2D474A1A1B1314190100062E3825
+ client 192.168.16.12 server-key 7 02050A4D09070B2D474A1A1B1314190100062E3825
+ client 192.168.16.13 server-key 7 02050A4D09070B2D474A1A1B1314190100062E3825
+ port 3799
 !
 aaa session-id common
 clock timezone GMT 1 0
@@ -38,22 +51,21 @@ vtp mode transparent
 !
 no ip domain-lookup
 ip domain-name mock-domain.com
+ip device tracking probe delay 10
 no ip cef
 no ipv6 cef
+authentication mac-move permit
 !
 !
-file prompt quiet
+dot1x system-auth-control
 archive
  path flash:archive
+ maximum 5
 !
-spanning-tree mode pvst
+spanning-tree mode mst
 spanning-tree portfast edge bpduguard default
 spanning-tree extend system-id
 !
-vlan internal allocation policy ascending
-!
-vlan 1
- name "default"
 !
 vlan 5
  name "vlan 5"
@@ -76,23 +88,59 @@ no cdp run
 !
 !
 interface GigabitEthernet0/0
+ description "uplink"
  switchport mode access
- media-type rj45
  negotiation auto
+ spanning-tree portfast edge
 !
 interface GigabitEthernet0/1
- switchport mode access
- media-type rj45
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
  negotiation auto
 !
 interface GigabitEthernet0/2
- shutdown
- media-type rj45
+ description "Het is een test"
+ switchport access vlan 5
+ switchport mode access
  negotiation auto
+ spanning-tree portfast edge
 !
 interface GigabitEthernet0/3
- shutdown
- media-type rj45
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ authentication event server dead action authorize
+ authentication event server alive action reinitialize
+ authentication host-mode multi-domain
+ authentication order dot1x mab
+ authentication port-control auto
+ authentication periodic
+ authentication timer reauthenticate server
+ authentication timer inactivity server
+ authentication violation restrict
+ mab
+ dot1x pae authenticator
+ dot1x timeout tx-period 5
+ switchport mode access
+ negotiation auto
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/1
+ switchport access vlan 11
+ switchport mode access
+ negotiation auto
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ negotiation auto
+!
+interface GigabitEthernet1/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
  negotiation auto
 !
 interface Vlan1
@@ -102,18 +150,22 @@ no ip classless
 no ip forward-protocol nd
 !
 no ip http server
-no ip http secure-server
 !
 ip ssh version 2
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 ip scp server enable
 !
 !
-logging host 192.168.13.100
+logging host 192.168.43.107
 !
 !
 snmp-server host 172.16.10.22 version 2c readstring 
 snmp-server host 172.16.10.33 version 2c readstring 
 !
+radius-server attribute 32 include-in-access-req
+radius-server dead-criteria time 5 tries 3
+radius-server deadtime 5
 !
 !
 control-plane
@@ -130,5 +182,6 @@ line vty 5 15
  transport input ssh
 !
 ntp server 172.16.10.22
+ntp server 172.16.10.23
 !
 end

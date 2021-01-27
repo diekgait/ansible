@@ -1,56 +1,6 @@
-+username cisco privilege 15 password 7 1511021F0725
-+ip domain-name mock-domain.com
-archive
- +path flash:archive
-+vlan 1
- +name "default"
-vlan 7
- +name "voice_haaksbergen"
-+vlan 9
- +name "data haaksbergen"
-+lldp run
-+no cdp run
-line vty 0 4
- +transport input ssh
--username cisco privilege 15 password 0 cisco
--ip domain-name oefen.lab
-archive
- -path flash0:archive
--vlan 5
- -name test
--vlan 6
- -name tank
-vlan 7
- -name tank7
--vlan 8
- -name tank8
--logging trap debugging
--banner exec ^C
-**************************************************************************
-* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
-* education. IOSv is provided as-is and is not supported by Cisco's      *
-* Technical Advisory Center. Any use or disclosure, in whole or in part, *
-* of the IOSv Software or Documentation to any third party for any       *
-* purposes is expressly prohibited except as otherwise authorized by     *
-* Cisco in writing.                                                      *
-**************************************************************************^C
--banner incoming ^C
-**************************************************************************
-* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
-* education. IOSv is provided as-is and is not supported by Cisco's      *
-* Technical Advisory Center. Any use or disclosure, in whole or in part, *
-* of the IOSv Software or Documentation to any third party for any       *
-* purposes is expressly prohibited except as otherwise authorized by     *
-* Cisco in writing.                                                      *
-**************************************************************************^C
--banner login ^C
-**************************************************************************
-* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
-* education. IOSv is provided as-is and is not supported by Cisco's      *
-* Technical Advisory Center. Any use or disclosure, in whole or in part, *
-* of the IOSv Software or Documentation to any third party for any       *
-* purposes is expressly prohibited except as otherwise authorized by     *
-* Cisco in writing.                                                      *
-**************************************************************************^C
-line vty 0 4
- -transport input telnet ssh
+aaa group server radius NAC
+ +server-private 192.168.16.12 auth-port 1812 acct-port 1813 key 7 02050A4D09070B2D474A1A1B1314190100062E3825
+ +server-private 192.168.16.13 auth-port 1812 acct-port 1813 key 7 02050A4D09070B2D474A1A1B1314190100062E3825
+aaa server radius dynamic-author
+ +client 192.168.16.12 server-key 7 02050A4D09070B2D474A1A1B1314190100062E3825
+ +client 192.168.16.13 server-key 7 02050A4D09070B2D474A1A1B1314190100062E3825

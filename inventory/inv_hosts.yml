@@ -26,11 +26,11 @@ all:
       ansible_network_os: ios
     ESW01:
       device_role: edge-switch
-      site: test
+      site: hengelo
       ansible_ssh_host: 192.168.13.11
       ansible_network_os: ios
     ESW02:
       device_role: edge-switch
-      site: test
+      site: haaksbergen
       ansible_ssh_host: 192.168.13.12
       ansible_network_os: ios

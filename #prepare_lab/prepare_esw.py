@@ -5,7 +5,7 @@ tnports = {
     '192.168.13.12' : 5002,
 }
 for host,port in tnports.items():
-    tn = telnetlib.Telnet("192.168.56.102",port)
+    tn = telnetlib.Telnet("192.168.13.1",port)
     print(tn.read_very_eager().decode('ascii'))
     tn.write(b"\r")
     print(tn.read_very_eager().decode('ascii'))

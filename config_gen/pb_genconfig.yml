@@ -29,13 +29,4 @@
         dest: "./compiled/{{ inventory_hostname }}/running-config"
         lstrip_blocks: true
         trim_blocks: true
-    - napalm_install_config:
-        hostname: '{{ ansible_ssh_host }}'
-        username: '{{ ansible_user }}'
-        dev_os: '{{ ansible_network_os }}'
-        password: '{{ ansible_password }}'
-        config_file: './compiled/{{ inventory_hostname }}/running-config'
-        commit_changes: true
-        replace_config: true
-        get_diffs: true
-        diff_file: './compiled/{{ inventory_hostname }}/diff'
+...

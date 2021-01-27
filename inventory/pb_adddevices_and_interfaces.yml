@@ -15,7 +15,7 @@
           serial: "{{ ansible_net_serialnum }}"
           status: Active
           device_role: "{{ device_role }}"
-          site: “test"
+          site: "{{ site }}"
           custom_fields:
             code_version: "{{ ansible_net_version }}"
     - name: "TASK 110: NETBOX >> ADD INTERFACES TO NETBOX"
